@@ -1,0 +1,5 @@
+1. Create GUI.
+2. Create bot`s general logic.
+3. Create simple AI.
+4. Create complicated AI.
+5. Deploy bot.
