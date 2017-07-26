@@ -27,7 +27,7 @@ namespace ChatBotDirtyJhonny
             //
 
             this.bw = new BackgroundWorker();
-            this.bw.DoWork += bw_DoWork;
+            this.bw.DoWork += Bw_DoWork;
             greetings.Add(1, "Привет");
             greetings.Add(3, "привет");
             greetings.Add(2, "Hello");
@@ -36,18 +36,19 @@ namespace ChatBotDirtyJhonny
             greetings.Add(6, "Приффки");
         }
 
-        async void bw_DoWork(object sender, DoWorkEventArgs e)
+        async void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
-            var key = e.Argument as String; // получаем ключ из аргументов
+            var key = e.Argument as String; // get a key from argumet
             try
             {
-                var Bot = new Telegram.Bot.TelegramBotClient(key); // инициализируем API
-                await Bot.SetWebhookAsync(""); // Обязательно! убираем старую привязку к вебхуку для бота
-                await Bot.SendTextMessageAsync(191116543, "Привет! Я онлайн.");
+                var Bot = new Telegram.Bot.TelegramBotClient(key); // init API
+                await Bot.SetWebhookAsync(""); // Required!Remove the old binding to the webhook for the bot
+               
+                               await Bot.SendTextMessageAsync(191116543, "Привет! Я онлайн.");
 
 
-                // Inlin'ы
+                // Inlin's
                 Bot.OnInlineQuery += async (object si, Telegram.Bot.Args.InlineQueryEventArgs ei) =>
                 {
                     var query = ei.InlineQuery.Query;
@@ -96,7 +97,7 @@ namespace ChatBotDirtyJhonny
                     await Bot.AnswerInlineQueryAsync(ei.InlineQuery.Id, results);
                 };
 
-                // Callback'и от кнопок
+                // Callback's from buttons
                 Bot.OnCallbackQuery += async (object sc, Telegram.Bot.Args.CallbackQueryEventArgs ev) =>
                 {
                     var message = ev.CallbackQuery.Message;
@@ -108,13 +109,13 @@ namespace ChatBotDirtyJhonny
                     if (ev.CallbackQuery.Data == "callback2")
                     {
                         await Bot.SendTextMessageAsync(message.Chat.Id, "Test");
-                        await Bot.AnswerCallbackQueryAsync(ev.CallbackQuery.Id); // отсылаем пустое, чтобы убрать "частики" на кнопке
+                        await Bot.AnswerCallbackQueryAsync(ev.CallbackQuery.Id); // Send the blank to remove the "bits" on the button
                     }
                 };
 
                 Bot.OnUpdate += async (object su, Telegram.Bot.Args.UpdateEventArgs evu) =>
                 {
-                    if (evu.Update.CallbackQuery != null || evu.Update.InlineQuery != null) return; // в этом блоке нам келлбэки и инлайны не нужны
+                    if (evu.Update.CallbackQuery != null || evu.Update.InlineQuery != null) return; // In this block we do not need callbacks and inlines
                     var update = evu.Update;
                     var message = update.Message;
                     if (message == null) return;
@@ -122,7 +123,7 @@ namespace ChatBotDirtyJhonny
                     {
                         if (greetings.ContainsValue(message.Text))
                         {
-                            // в ответ на приветствие из словаря выводим сообщение
+                            // In response to a greeting from the dictionary, we print a message
                             Random rnd = new Random();
                             int ran = rnd.Next(1, 7);
                             await Bot.SendTextMessageAsync(message.Chat.Id, greetings[ran] + ", " + message.Chat.FirstName + "=)");
@@ -136,7 +137,7 @@ namespace ChatBotDirtyJhonny
 
                         //if (message.Text == "/getimage")
                         //{
-                        //    // в ответ на команду /getimage выводим картинку
+                        //    // In response to the / getimage command, we display a picture
                         //    await Bot.SendPhotoAsync(message.Chat.Id, "picture url", "description");
                         //}
 
@@ -177,7 +178,7 @@ namespace ChatBotDirtyJhonny
 
                         //    await Bot.SendTextMessageAsync(message.Chat.Id, "test msg", false, false, 0, keyboard, Telegram.Bot.Types.Enums.ParseMode.Default);
                         //}
-                        //// обработка reply кнопок
+                        //// Reply button processing
                         //if (message.Text.ToLower() == "test1")
                         //{
                         //    await Bot.SendTextMessageAsync(message.Chat.Id, "Test11", replyToMessageId: message.MessageId);
@@ -189,22 +190,22 @@ namespace ChatBotDirtyJhonny
                     }
                 };
 
-                // запускаем прием обновлений
+                // We start receiving updates
                 Bot.StartReceiving();
             }
             catch (Telegram.Bot.Exceptions.ApiRequestException ex)
             {
-                Console.WriteLine(ex.Message); // если ключ не подошел - пишем об этом в консоль отладки
+                Console.WriteLine(ex.Message); // If the key does not fit, write about this in the debug console
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             if (!flag)
             {
                 Close();
             }
-            this.bw.RunWorkerAsync(""); // передаем этот token в виде аргумента методу bw_DoWork, token можете узнать http://vk.com/madmix37
+            this.bw.RunWorkerAsync(""); // Pass this token as an argument to the bw_DoWork method, you can get token from http://vk.com/madmix37
             this.flag = false;
             button1.Text = "Stop Bot";
         }
