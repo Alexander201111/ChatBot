@@ -122,11 +122,12 @@ namespace ChatBotDirtyJhonny
                     {
                         if (greetings.ContainsValue(message.Text))
                         {
-                            // в ответ на команду /saysomething выводим сообщение
+                            // в ответ на приветствие из словаря выводим сообщение
                             Random rnd = new Random();
                             int ran = rnd.Next(1, 7);
                             await Bot.SendTextMessageAsync(message.Chat.Id, greetings[ran] + ", " + message.Chat.FirstName + "=)");
                             await Bot.SendTextMessageAsync(message.Chat.Id, "Ты наверное хочешь узнать кто я такой? Так вот, меня зовут... Грязный Джонни. Я обычный телеграм бот, который только учится. Поэтому я вас прошу, не пишите сюда всякие гадости, а то будет вам \"а-тя-тя\".");
+                            //to reply u need add this ", replyToMessageId: message.MessageId" to SendTextMessageAsync 
                         }
                         else
                         {
@@ -203,7 +204,7 @@ namespace ChatBotDirtyJhonny
             {
                 Close();
             }
-            this.bw.RunWorkerAsync("449044351:AAEVkKcQV2w9Io6VCO04htYyve8J22JQHvU"); // передаем этот token в виде аргумента методу bw_DoWork
+            this.bw.RunWorkerAsync(""); // передаем этот token в виде аргумента методу bw_DoWork, token можете узнать http://vk.com/madmix37
             this.flag = false;
             button1.Text = "Stop Bot";
         }
